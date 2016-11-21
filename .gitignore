@@ -1,0 +1,5 @@
+config.toml
+vendor
+
+bin/slackbot-x64
+bin/slackbot-x86

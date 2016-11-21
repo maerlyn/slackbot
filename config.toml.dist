@@ -1,0 +1,6 @@
+my_name = ''
+icon_url = ''
+token = ''
+
+dropbox_command_socket = ''
+rtorrent_addr = ''
