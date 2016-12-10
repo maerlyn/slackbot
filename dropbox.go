@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -49,6 +50,7 @@ func GetDropboxStatus() string {
 func MonitorDropboxStatus() {
 	timer := time.NewTicker(1 * time.Minute)
 	checksSinceUpToDate := 0
+	lastStatus := ""
 
 	for {
 		<-timer.C
@@ -56,11 +58,38 @@ func MonitorDropboxStatus() {
 
 		if status != "Up to date" {
 			checksSinceUpToDate++
+			lastStatus = status
 		} else {
-			if checksSinceUpToDate > 2 {
-				slackRtm.PostMessage("torrent", "Dropbox sync finished", postMessageParameters)
+			if checksSinceUpToDate > 3 {
+				slackRtm.PostMessage("torrent", "Dropbox sync finished\nlast status was: "+lastStatus, postMessageParameters)
 				checksSinceUpToDate = 0
 			}
 		}
+	}
+}
+
+func StartDropbox() {
+	cmd := exec.Command("/home/maerlyn/dropbox.py", "start")
+	if err := cmd.Start(); err != nil {
+		slackRtm.PostMessage("torrent", "start failed: "+err.Error(), postMessageParameters)
+		return
+	}
+
+	err := cmd.Wait()
+	if err != nil {
+		slackRtm.PostMessage("torrent", "start failed: "+err.Error(), postMessageParameters)
+	}
+}
+
+func StopDropbox() {
+	cmd := exec.Command("/home/maerlyn/dropbox.py", "stop")
+	if err := cmd.Start(); err != nil {
+		slackRtm.PostMessage("torrent", "stop failed: "+err.Error(), postMessageParameters)
+		return
+	}
+
+	err := cmd.Wait()
+	if err != nil {
+		slackRtm.PostMessage("torrent", "stop failed: "+err.Error(), postMessageParameters)
 	}
 }

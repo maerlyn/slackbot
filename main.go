@@ -86,6 +86,16 @@ func main() {
 					slackRtm.PostMessage("torrent", "```\n"+buffer.String()+"```", postMessageParameters)
 				}
 
+				if info.Name == "torrent" && ev.Msg.Text == myName+" dropbox start" {
+					StartDropbox()
+					slackRtm.PostMessage("torrent", "done", postMessageParameters)
+				}
+
+				if info.Name == "torrent" && ev.Msg.Text == myName+" dropbox stop" {
+					StopDropbox()
+					slackRtm.PostMessage("torrent", "done", postMessageParameters)
+				}
+
 			}
 		}
 	}
