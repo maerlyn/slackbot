@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/nlopes/slack"
 	"github.com/olekukonko/tablewriter"
@@ -57,7 +58,7 @@ func main() {
 		case msg := <-slackRtm.IncomingEvents:
 			switch ev := msg.Data.(type) {
 			case *slack.MessageEvent:
-				if myName != ev.Msg.Text[:len(myName)] {
+				if !strings.HasPrefix(ev.Msg.Text, myName) {
 					continue
 				}
 
