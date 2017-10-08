@@ -123,11 +123,12 @@ func NgrokTunnel(message string) {
 
 func isNgrokRunning() bool {
 	resp, err := http.Get("http://127.0.0.1:4040/")
-	defer resp.Body.Close()
 
 	if err != nil {
 		return false
 	}
+
+	resp.Body.Close()
 
 	return true
 }
