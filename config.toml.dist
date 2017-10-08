@@ -4,3 +4,5 @@ token = ''
 
 dropbox_command_socket = ''
 rtorrent_addr = ''
+
+ngrok_binary = ''

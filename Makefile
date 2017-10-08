@@ -1,4 +1,4 @@
-FILES = main.go dropbox.go rtorrent.go
+FILES = main.go dropbox.go rtorrent.go ngrok.go
 
 run:
 	go run $(FILES)

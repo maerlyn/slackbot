@@ -20,6 +20,8 @@ var (
 
 	postMessageParameters slack.PostMessageParameters
 	slackRtm              *slack.RTM
+
+	ngrokBinary string
 )
 
 func init() {
@@ -34,6 +36,8 @@ func init() {
 
 	dropboxCommandSocket = viper.GetString("dropbox_command_socket")
 	rtorrentAddress = viper.GetString("rtorrent_addr")
+
+	ngrokBinary = viper.GetString("ngrok_binary")
 
 	postMessageParameters = slack.PostMessageParameters{
 		Username: myName,
@@ -64,6 +68,7 @@ func main() {
 
 				info, _ := api.GetChannelInfo(ev.Channel)
 
+				//yeah it's not pretty, but meh
 				if info.Name == "torrent" && ev.Msg.Text == myName+" dropbox status" {
 					status := GetDropboxStatus()
 					slackRtm.PostMessage("torrent", status, postMessageParameters)
@@ -97,6 +102,29 @@ func main() {
 					slackRtm.PostMessage("torrent", "done", postMessageParameters)
 				}
 
+				if info.Name == "torrent" && ev.Msg.Text == myName+" ngrok status" {
+					NgrokStatus()
+				}
+
+				if info.Name == "torrent" && ev.Msg.Text == myName+" ngrok start" {
+					NgrokStart()
+				}
+
+				if info.Name == "torrent" && ev.Msg.Text == myName+" ngrok stop" {
+					NgrokStop()
+				}
+
+				if info.Name == "torrent" && ev.Msg.Text == myName+" ngrok list" {
+					NgrokList()
+				}
+
+				if info.Name == "torrent" && ev.Msg.Text == myName+" ngrok clear" {
+					NgrokClear()
+				}
+
+				if info.Name == "torrent" && strings.HasPrefix(ev.Msg.Text, myName+" ngrok tunnel ") {
+					NgrokTunnel(ev.Msg.Text[len(myName+" ngrok tunnel "):])
+				}
 			}
 		}
 	}
